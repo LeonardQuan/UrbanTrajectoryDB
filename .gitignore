@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.idea/
+.vscode/
+.hermes/
+.DS_Store
+Thumbs.db
+
+# 数据集通常很大，不提交到 Git
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# 实验生成物
+experiments/results/*
+!experiments/results/.gitkeep
