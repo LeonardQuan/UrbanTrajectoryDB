@@ -1,6 +1,8 @@
 from datetime import datetime
 from pathlib import Path
 
+import pytest
+
 from urban_trajectory_db.geolife import parse_geolife_file
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
@@ -14,5 +16,16 @@ def test_parse_geolife_file_returns_all_valid_points() -> None:
     assert points[0].longitude == 116.318417
     assert points[0].altitude_feet == 492.0
     assert points[0].recorded_at == datetime(2008, 10, 23, 2, 53, 4)
+
+# 测试是否会报告错误的行号
+def test_parse_geolife_file_reports_malformed_line_number() -> None:
+    malformed_file = FIXTURES_DIR / "malformed_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: expected 7 fields, got 2",
+    ):
+        parse_geolife_file(malformed_file)
+
 
 # 用于验证 parse_geolife_file 函数是否正确解析 Geolife 数据文件

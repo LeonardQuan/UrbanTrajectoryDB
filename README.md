@@ -88,6 +88,7 @@ uv run --no-sync pytest -v
 - [x] 编写 PostgreSQL/PostGIS 的 Docker Compose 配置
 - [ ] 启动并验证 PostgreSQL/PostGIS 容器
 - [x] 解析一个 GeoLife `.plt` 文件
+- [x] 检测字段数量错误并报告具体行号
 - [ ] 批量导入轨迹点
 - [ ] 实现时间和空间范围查询
 - [ ] 比较有无索引的查询性能

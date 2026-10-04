@@ -25,10 +25,16 @@ def parse_geolife_file(path: Path) -> list[TrajectoryPoint]:
         for _ in range(6):
             next(file) # 跳过前6行的文件头信息
 
-        for line in file:
-            fields = line.strip().split(",") # 按逗号分割每一行数据
-            if not line.strip():
+        for line_number, line in enumerate(file, start=7):
+            stripped_line = line.strip()
+            if not stripped_line:
                 continue
+
+            fields = stripped_line.split(",")
+            if len(fields) != 7:
+                raise ValueError(
+                    f"{path}: line {line_number}: expected 7 fields, got {len(fields)}"
+                )
 
             points.append(
                 TrajectoryPoint(
