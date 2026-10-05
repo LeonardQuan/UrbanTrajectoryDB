@@ -27,5 +27,12 @@ def test_parse_geolife_file_reports_malformed_line_number() -> None:
     ):
         parse_geolife_file(malformed_file)
 
+# 测试是否会报告无效的纬度值
+def test_parse_geolife_file_reports_invalid_latitude() -> None:
+    invalid_file = FIXTURES_DIR / "invalid_latitude_geolife.plt"
 
-# 用于验证 parse_geolife_file 函数是否正确解析 Geolife 数据文件
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: invalid latitude 'not-a-number'",
+    ):
+        parse_geolife_file(invalid_file)
