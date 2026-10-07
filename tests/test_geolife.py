@@ -36,3 +36,25 @@ def test_parse_geolife_file_reports_invalid_latitude() -> None:
         match=r"line 7: invalid latitude 'not-a-number'",
     ):
         parse_geolife_file(invalid_file)
+
+
+# 测试是否会报告超出合法范围的纬度
+
+def test_parse_geolife_file_reports_out_of_range_latitude() -> None:
+    invalid_file = FIXTURES_DIR / "out_of_range_latitude_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: latitude 91\.0 out of range \[-90, 90\]",
+    ):
+        parse_geolife_file(invalid_file)
+
+
+def test_parse_geolife_file_reports_negative_out_of_range_latitude() -> None:
+    invalid_file = FIXTURES_DIR / "out_of_range_negative_latitude_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: latitude -91\.0 out of range \[-90, 90\]",
+    ):
+        parse_geolife_file(invalid_file)
