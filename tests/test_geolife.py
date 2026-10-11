@@ -68,3 +68,23 @@ def test_parse_geolife_file_reports_invalid_longitude() -> None:
         match=r"line 7: invalid longitude 'not-a-number'",
     ):
         parse_geolife_file(invalid_file)
+
+
+def test_parse_geolife_file_reports_out_of_range_longitude() -> None:
+    invalid_file = FIXTURES_DIR / "out_of_range_longitude_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: longitude 181\.0 out of range \[-180, 180\]",
+    ):
+        parse_geolife_file(invalid_file)
+
+
+def test_parse_geolife_file_reports_negative_out_of_range_longitude() -> None:
+    invalid_file = FIXTURES_DIR / "out_of_range_negative_longitude_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: longitude -181\.0 out of range \[-180, 180\]",
+    ):
+        parse_geolife_file(invalid_file)

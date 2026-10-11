@@ -56,6 +56,12 @@ def parse_geolife_file(path: Path) -> list[TrajectoryPoint]:
                     f"{path}: line {line_number}: invalid longitude {fields[1]!r}"
                 ) from exc
 
+            if not -180 <= longitude <= 180:
+                raise ValueError(
+                    f"{path}: line {line_number}: "
+                    f"longitude {longitude} out of range [-180, 180]"
+                )
+
             points.append(
                 TrajectoryPoint(
                     latitude=latitude,
