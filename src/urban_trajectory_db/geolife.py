@@ -62,11 +62,18 @@ def parse_geolife_file(path: Path) -> list[TrajectoryPoint]:
                     f"longitude {longitude} out of range [-180, 180]"
                 )
 
+            try:
+                altitude_feet = float(fields[3])
+            except ValueError as exc:
+                raise ValueError(
+                    f"{path}: line {line_number}: invalid altitude {fields[3]!r}"
+                ) from exc
+
             points.append(
                 TrajectoryPoint(
                     latitude=latitude,
                     longitude=longitude,
-                    altitude_feet=float(fields[3]),
+                    altitude_feet=altitude_feet,
                     recorded_at=datetime.strptime(
                         f"{fields[5]} {fields[6]}", "%Y-%m-%d %H:%M:%S"
                     ),

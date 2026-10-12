@@ -88,3 +88,13 @@ def test_parse_geolife_file_reports_negative_out_of_range_longitude() -> None:
         match=r"line 7: longitude -181\.0 out of range \[-180, 180\]",
     ):
         parse_geolife_file(invalid_file)
+
+
+def test_parse_geolife_file_reports_invalid_altitude() -> None:
+    invalid_file = FIXTURES_DIR / "invalid_altitude_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: invalid altitude 'not-a-number'",
+    ):
+        parse_geolife_file(invalid_file)
