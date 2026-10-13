@@ -20,3 +20,7 @@ data/processed/*
 # 实验生成物
 experiments/results/*
 !experiments/results/.gitkeep
+
+# 本地C++构建产物，不提交二进制文件
+cpp/build/
+cpp/build-*/

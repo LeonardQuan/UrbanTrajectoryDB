@@ -69,14 +69,20 @@ def parse_geolife_file(path: Path) -> list[TrajectoryPoint]:
                     f"{path}: line {line_number}: invalid altitude {fields[3]!r}"
                 ) from exc
 
+            datetime_text = f"{fields[5]} {fields[6]}"
+            try:
+                recorded_at = datetime.strptime(datetime_text, "%Y-%m-%d %H:%M:%S")
+            except ValueError as exc:
+                raise ValueError(
+                    f"{path}: line {line_number}: invalid datetime {datetime_text!r}"
+                ) from exc
+
             points.append(
                 TrajectoryPoint(
                     latitude=latitude,
                     longitude=longitude,
                     altitude_feet=altitude_feet,
-                    recorded_at=datetime.strptime(
-                        f"{fields[5]} {fields[6]}", "%Y-%m-%d %H:%M:%S"
-                    ),
+                    recorded_at=recorded_at,
                 )
             )
 

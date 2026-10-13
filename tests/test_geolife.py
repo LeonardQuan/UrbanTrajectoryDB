@@ -98,3 +98,13 @@ def test_parse_geolife_file_reports_invalid_altitude() -> None:
         match=r"line 7: invalid altitude 'not-a-number'",
     ):
         parse_geolife_file(invalid_file)
+
+
+def test_parse_geolife_file_reports_invalid_datetime() -> None:
+    invalid_file = FIXTURES_DIR / "invalid_datetime_geolife.plt"
+
+    with pytest.raises(
+        ValueError,
+        match=r"line 7: invalid datetime '2008-02-30 02:53:04'",
+    ):
+        parse_geolife_file(invalid_file)

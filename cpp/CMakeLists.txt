@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.16)
+project(UrbanTrajectoryCompression LANGUAGES CXX)
+
+add_executable(trajectory_compress compression.cpp)
+target_compile_features(trajectory_compress PRIVATE cxx_std_17)
+set_target_properties(trajectory_compress PROPERTIES CXX_EXTENSIONS OFF)
+if(MSVC)
+    target_compile_options(trajectory_compress PRIVATE /W4)
+else()
+    target_compile_options(trajectory_compress PRIVATE -Wall -Wextra -pedantic)
+endif()

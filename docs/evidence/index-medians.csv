@@ -1,0 +1,19 @@
+phase,workload,nominal_range_fraction,total_points,selection_count,actual_rows,actual_selectivity,median_execution_ms,median_planning_ms,node_types
+baseline,spatial_0.01,0.01,1316180,2380,2380,0.0018082633074503487,98.567,0.159,Gather;Seq Scan
+baseline,time_0.01,0.01,1316180,14537,14537,0.011044841890926773,61.239,0.059,Gather;Seq Scan
+baseline,combined_0.01,0.01,1316180,0,0,0.0,102.64,0.149,Gather;Seq Scan
+baseline,spatial_0.1,0.1,1316180,6612,6612,0.005023628986916683,100.237,0.168,Gather;Seq Scan
+baseline,time_0.1,0.1,1316180,143860,143860,0.10930115941588536,86.941,0.062,Seq Scan
+baseline,combined_0.1,0.1,1316180,0,0,0.0,100.118,0.178,Gather;Seq Scan
+baseline,spatial_1,1.0,1316180,1316180,1316180,1.0,284.911,0.213,Seq Scan
+baseline,time_1,1.0,1316180,1316180,1316180,1.0,162.363,0.079,Seq Scan
+baseline,combined_1,1.0,1316180,1316180,1316180,1.0,294.347,0.259,Seq Scan
+indexed,spatial_0.01,0.01,1316180,2380,2380,0.0018082633074503487,0.346,0.131,Bitmap Heap Scan;Bitmap Index Scan
+indexed,time_0.01,0.01,1316180,14537,14537,0.011044841890926773,2.129,0.108,Bitmap Heap Scan;Bitmap Index Scan
+indexed,combined_0.01,0.01,1316180,0,0,0.0,0.497,0.166,Bitmap Heap Scan;Bitmap Index Scan;BitmapAnd
+indexed,spatial_0.1,0.1,1316180,6612,6612,0.005023628986916683,1.399,0.157,Bitmap Heap Scan;Bitmap Index Scan
+indexed,time_0.1,0.1,1316180,143860,143860,0.10930115941588536,18.103,0.087,Bitmap Heap Scan;Bitmap Index Scan
+indexed,combined_0.1,0.1,1316180,0,0,0.0,4.038,0.18,Bitmap Heap Scan;Bitmap Index Scan;BitmapAnd
+indexed,spatial_1,1.0,1316180,1316180,1316180,1.0,283.825,0.23,Seq Scan
+indexed,time_1,1.0,1316180,1316180,1316180,1.0,165.347,0.286,Seq Scan
+indexed,combined_1,1.0,1316180,1316180,1316180,1.0,314.928,0.306,Seq Scan
