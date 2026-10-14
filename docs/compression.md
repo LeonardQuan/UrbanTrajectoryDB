@@ -1,6 +1,6 @@
-# Educational C++ trajectory compression MVP
+# C++ trajectory compression
 
-`cpp/compression.cpp` is a standalone C++17 standard-library-only CLI. It reads one ordered trajectory, runs iterative Douglas–Peucker, verifies the projected error, and writes retained original coordinates. It deliberately does not integrate with or change the Python Geolife parser, database, or package dependencies.
+`cpp/compression.cpp` is a standalone C++17 standard-library-only CLI. It reads one ordered trajectory, runs iterative Douglas–Peucker, verifies the projected error, and writes retained original coordinates. The compression executable is independent of the Python parser and accepts a two-column coordinate CSV.
 
 ## Build and run
 
@@ -67,7 +67,7 @@ After simplification, a separate exhaustive audit measures every original vertex
 2. Observe the split condition and why endpoint indices are always marked.
 3. Compare epsilon 0, 1, 5, and 20; inspect retention versus verified deviation.
 4. Reimplement the finite-segment distance, then reproduce the independent Python check.
-5. Only after understanding these pieces consider efficient auditing or a proper regional/geodesic metric. This MVP is an understandable executable, not an overbuilt general-purpose geometry library.
+5. Only after understanding these pieces consider efficient auditing or a proper regional/geodesic metric. The implementation handles ordered coordinate sequences with the local projection described above.
 
 ## Tests and real RED/GREEN notes
 
@@ -80,7 +80,7 @@ Run in the existing virtual environment (the host's default `python` lacks pytes
 
 The session fixture discovers `CXX` or `g++`, with a fallback to `F:/mingw64/bin/g++.exe`, compiles in pytest's temporary directory using C++17 and strict warnings, and launches the actual executable. Only absence of a compiler causes a reasoned skip. Compilation warnings/errors and missing implementation are failures, not skips. Builds and tests do not need network access. Independent Python geometry checks validate the returned polyline over several epsilon values and assert endpoint preservation and ordered original-point membership.
 
-These are **actual execution excerpts**, not example/generated results. Each feature slice was tested before its implementation. Raw local transcripts were captured as `F:/Hermes-Official/cache/scratch/compression-{red,green}N.txt` (scratch is temporary); their outcome lines are preserved here:
+The following table records the test-first implementation stages and their observed results:
 
 | Slice | Observed RED | Observed GREEN |
 | --- | --- | --- |
@@ -125,4 +125,4 @@ stderr:
 {"original":3,"retained":2,"compression_ratio":0.33333333333333337,"max_deviation_m":11.119492664429957}
 ```
 
-Only `cpp/`, `tests/test_compression.py`, and this document belong to the compression change. Existing step-08 parser edits and other concurrent work are preserved; no commit or push was performed.
+For the complete pipeline and current validation record, see `docs/reproduce-showcase.md` and `docs/verification.md`.

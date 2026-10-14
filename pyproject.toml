@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "urban-trajectory-db"
 version = "0.1.0"
-description = "面向本科科研训练的城市轨迹数据存储、查询与性能实验项目"
+description = "GeoLife轨迹数据存储、时空查询、索引性能实验与几何压缩"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

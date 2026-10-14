@@ -1,8 +1,10 @@
 # UrbanTrajectoryDB
 
-**真实轨迹 → PostGIS时空查询 → 索引对照实验 → C++几何压缩**
+UrbanTrajectoryDB用于城市GPS轨迹的存储、查询和几何压缩。项目使用Python解析GeoLife数据，通过PostgreSQL/PostGIS完成批量导入和时空范围查询，比较空间与时间索引的查询性能，并用C++实现Douglas–Peucker压缩与误差检查。
 
-## 展示版 MVP（实测：2026-10-13）
+## 实验概览
+
+以下结果记录于2026-10-13，完整方法与查询计划见实验报告。
 
 | 项目 | 实际结果 |
 |---|---|
@@ -12,26 +14,21 @@
 | 索引对照 | 9工作负载×2阶段，每种预热1次、测量5次，90份原始计划 |
 | C++压缩 | 908点真实轨迹，ε=10投影米时保留111点，最大投影偏差9.8673米 |
 
-**快速入口**：[实验报告](docs/experiment-report.md) · [报告PDF](docs/experiment-report.pdf) · [复现操作](docs/reproduce-showcase.md) · [学习路线](docs/showcase-learning-path.md) · [邮件准备](docs/advisor-contact.md)
+文档：[实验报告](docs/experiment-report.md) · [报告PDF](docs/experiment-report.pdf) · [复现操作](docs/reproduce-showcase.md) · [代码阅读指南](docs/showcase-learning-path.md)
 
-本项目是AI辅助完成的本科工程训练MVP，不主张新算法或论文成果。低选择性查询在本机受益于索引，全范围仍自然走顺序扫描。小组合窗口存在0结果，不能借此宣称代表性业务提速。压缩仅保证局部投影下的几何误差，不保留完整时间语义。
+小范围查询在本次实验中使用了索引，全范围查询仍选择顺序扫描。部分组合窗口返回0行，结果受样本分布影响。压缩模块使用局部投影计算几何偏差，不处理时间同步误差。
 
 [真实统计](docs/evidence/showcase-summary.json)、[计时CSV](docs/evidence/index-medians.csv)、[原始查询计划](docs/evidence/index-plans.json)均来自实际运行。原始与压缩轨迹不随仓库分发。
 
-## 项目介绍
+数据导入、查询、索引实验和压缩流程可通过命令行分别运行，也可使用复现脚本一次执行。
 
-一个面向本科科研训练的城市轨迹数据项目：使用 Python 解析 GeoLife GPS 轨迹，使用 PostgreSQL/PostGIS 存储和查询时空数据，通过真实实验理解空间索引，使用 C++ 实现几何轨迹压缩。
+## 功能
 
-> 当前阶段：真实数据端到端MVP已运行，展示材料见顶部入口；作者学习掌握后再自行联系导师。
-
-## 你会学到什么
-
-- 如何把一个较大的项目拆成可验证的小任务；
-- Python 文件解析、类型建模和自动化测试；
-- PostgreSQL/PostGIS 的空间数据类型与 GiST 索引；
-- 使用 `EXPLAIN ANALYZE` 分析查询计划；
-- 使用 C++ 实现 Douglas–Peucker 轨迹压缩；
-- 使用 Git、README 和实验报告记录可复现工作。
+- 解析GeoLife轨迹，检查字段格式和经纬度范围，定位错误文件与行号。
+- 使用COPY批量写入PostGIS，按文件提交事务，保存SHA-256来源信息并跳过重复导入。
+- 按用户、时间和矩形空间窗口查询轨迹点。
+- 在独立实验表上比较有无索引的查询计划和执行时间，输出JSON与CSV。
+- 运行C++轨迹压缩，保留端点并检查简化折线的最大投影偏差。
 
 ## 技术栈
 
@@ -49,7 +46,7 @@ UrbanTrajectoryDB/
 ├── database/init/       # 数据库初始化 SQL
 ├── data/raw/            # 原始数据，不提交到 Git
 ├── data/processed/      # 处理中间结果，不提交到 Git
-├── docs/                # 新手教程和实验记录
+├── docs/                # 技术文档、教程和实验记录
 ├── experiments/results/ # 性能实验输出
 ├── src/                 # Python 源代码
 ├── tests/               # 自动化测试
@@ -90,19 +87,15 @@ uv sync --extra dev --no-install-project
 uv run --no-sync pytest -v
 ```
 
-## 学习方式
+## 文档
 
-这个项目允许使用 AI，但每个核心模块必须达到：
+- [数据库CLI](docs/database-usage.md)：连接配置、导入语义、查询参数和基准测试。
+- [C++压缩](docs/compression.md)：构建命令、输入输出格式、误差定义和限制。
+- [代码阅读指南](docs/showcase-learning-path.md)：模块依赖和建议阅读顺序。
+- [解析器教程](docs/learning-guide.md)：从测试样例到字段校验的分步说明。
+- [验证记录](docs/verification.md)：测试、审查和故障场景。
 
-1. 能解释输入和输出；
-2. 能解释关键设计选择；
-3. 能独立修改一个小功能；
-4. 能通过测试证明修改正确；
-5. 能说明实验结果，而不是只展示代码。
-
-详细步骤见 [`docs/learning-guide.md`](docs/learning-guide.md)。
-
-## 当前路线图
+## 已完成
 
 - [x] 建立项目骨架
 - [x] 编写 PostgreSQL/PostGIS 的 Docker Compose 配置
@@ -119,5 +112,8 @@ uv run --no-sync pytest -v
 - [x] 实现时间和空间范围查询
 - [x] 比较有无索引的查询性能
 - [x] 使用 C++ 实现几何轨迹压缩
-- [x] 完成真实实验报告和联系准备材料
-- [ ] 作者学习、亲自复现后自行联系导师
+- [x] 记录实验结果、查询计划和复现命令
+
+## 限制
+
+当前实验使用排序前1,000个文件，样本不是随机抽样。索引测试采用固定阶段顺序和热缓存计时；压缩实验只覆盖一条局部轨迹。尚未实现分布式执行、完整时间语义压缩或并发压力测试，详见实验报告。
